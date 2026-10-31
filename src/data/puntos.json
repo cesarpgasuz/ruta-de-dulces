@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1",
+    "nombre": "Paletas",
+    "direccion": "Av. Hidalgo 49",
+    "horaInicio": "07:00 pm",
+    "horaFin": "08:30 pm",
+    "lat": 21.14088,
+    "lng": -100.32355
+  },
+  {
+    "id": "2",
+    "nombre": "Pozada Hidalgo",
+    "direccion": "Av. Guanajuato #67",
+    "horaInicio": "07:00 pm",
+    "horaFin": "08:30 pm",
+    "lat": 21.14162,
+    "lng": -100.3242
+  },
+  {
+    "id": "3",
+    "nombre": "Ferrreteria Blanca",
+    "direccion": "Calle Irapuato #20",
+    "horaInicio": "07:00 pm",
+    "horaFin": "09:30 pm",
+    "lat": 21.14045,
+    "lng": -100.3256
+  },
+  {
+    "id": "4",
+    "nombre": "Cyber Tecno",
+    "direccion": "Av. Guanajuato #17",
+    "horaInicio": "06:00 pm",
+    "horaFin": "09:30 pm",
+    "lat": 21.1398,
+    "lng": -100.32395
+  },
+  {
+    "id": "5",
+    "nombre": "Plaza Principal Doctor Mora",
+    "direccion": "Jardín Principal Centro",
+    "horaInicio": "06:30 pm",
+    "horaFin": "10:00 pm",
+    "lat": 21.14068,
+    "lng": -100.3238
+  },
+  {
+    "id": "1793480949773",
+    "nombre": "sdfdsfsd",
+    "direccion": "dsfdsf",
+    "horaInicio": "07:00 p. m.",
+    "horaFin": "08:30 p. m.",
+    "lat": 21.141454,
+    "lng": -100.325051
+  }
+]
