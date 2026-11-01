@@ -39,7 +39,7 @@ export default function PublicView({
   }, []);
 
   return (
-    <div className="w-full h-screen flex flex-col md:flex-row bg-[#07080b] text-gray-100 overflow-hidden select-none">
+    <div className="w-full h-screen h-[100dvh] flex flex-col md:flex-row bg-[#07080b] text-gray-100 overflow-hidden select-none">
       
       {/* DESKTOP SIDEBAR (Left on desktop, hidden in mobile view in favor of bottom sliding carousel) */}
       <aside className="hidden md:flex flex-col w-[400px] lg:w-[440px] h-full bg-[#0a0d14] border-r border-[#191f2d] z-20 shadow-2xl relative">
@@ -148,28 +148,11 @@ export default function PublicView({
         </div>
       </aside>
 
-      {/* MOBILE TOP BAR (Fixed on top on mobile, zero blur GPU cost) */}
-      <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#0a0d14] border-b border-[#181e2b] z-30">
-        <div className="flex items-center gap-2">
-          <span className="text-xl">🎃</span>
-          <div>
-            <h1 className="text-xl font-extrabold font-halloween text-orange-500 tracking-wide halloween-glow-orange leading-tight">
-              RUTA DE DULCES
-            </h1>
-            <p className="text-[10px] text-gray-400">Doctor Mora · Halloween</p>
-          </div>
-        </div>
-
-        <div className="text-[11px] text-orange-400 font-semibold bg-orange-500/10 border border-orange-500/20 px-2.5 py-1 rounded-full">
-          {points.length} puntos
-        </div>
-      </header>
-
-      {/* RIGHT SIDE (FULL MAP ON DESKTOP, MAIN VIEW ON MOBILE) */}
+      {/* RIGHT SIDE (FULL MAP ON DESKTOP, 3/4 MAP + 1/4 SOLID CARDS SECTION ON MOBILE) */}
       <main className="flex-1 relative h-full flex flex-col overflow-hidden">
         
-        {/* Interactive Dark Map */}
-        <div className="flex-1 w-full h-full">
+        {/* Interactive Dark Map: Full height on desktop, 3/4 (~73%) on mobile */}
+        <div className="w-full h-[73%] md:h-full relative overflow-hidden">
           <HalloweenMap
             points={points}
             selectedPoint={selectedPoint}
@@ -177,11 +160,26 @@ export default function PublicView({
           />
         </div>
 
-        {/* MOBILE BOTTOM HORIZONTAL SLIDING CAROUSEL */}
-        <div className="md:hidden absolute bottom-3 left-0 right-0 z-30 px-3 pointer-events-none">
+        {/* MOBILE BOTTOM SOLID SECTION (1/4 of screen height, solid background like desktop) */}
+        <section className="md:hidden w-full h-[27%] bg-[#0a0d14] border-t border-[#181e2b] flex flex-col justify-between px-3.5 pt-2 pb-[calc(0.6rem+env(safe-area-inset-bottom,0px))] z-30 shadow-[0_-8px_30px_rgba(0,0,0,0.85)]">
+          
+          {/* Header inside mobile bottom section (matching Lovable style) */}
+          <div className="flex items-center justify-between px-1 mb-1.5 flex-shrink-0">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🎃</span>
+              <h2 className="text-xl font-extrabold font-halloween text-orange-500 tracking-wide halloween-glow-orange leading-none">
+                RUTA DE DULCES
+              </h2>
+            </div>
+            <span className="text-[11px] text-orange-400 font-semibold bg-orange-500/10 border border-orange-500/20 px-2.5 py-0.5 rounded-full">
+              {points.length} puntos
+            </span>
+          </div>
+
+          {/* Fully visible horizontal cards carousel */}
           <div
             ref={mobileScrollRef}
-            className="flex items-stretch gap-3 overflow-x-auto pb-2 pt-1 px-1 snap-x snap-mandatory pointer-events-auto no-scrollbar scroll-smooth"
+            className="flex-1 flex items-center gap-2.5 overflow-x-auto pb-1 px-1 snap-x snap-mandatory no-scrollbar scroll-smooth"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {points.map((point) => {
@@ -191,13 +189,13 @@ export default function PublicView({
                   key={point.id}
                   ref={(el) => cardRefs.current.set(point.id, el)}
                   onClick={() => handleSelectPoint(point)}
-                  className={`flex-shrink-0 w-[290px] p-3.5 rounded-2xl cursor-pointer transition-transform duration-200 snap-center border ${
+                  className={`flex-shrink-0 w-[275px] p-3 rounded-2xl cursor-pointer transition-transform duration-200 snap-center border ${
                     isSelected
-                      ? 'bg-[#121622] border-orange-500 shadow-[0_6px_20px_rgba(249,115,22,0.25)] ring-1 ring-orange-500/60 scale-[1.02]'
-                      : 'bg-[#0d1017] border-[#1e2535] hover:border-orange-500/40 shadow-lg'
+                      ? 'bg-[#151a26] border-orange-500 shadow-[0_4px_16px_rgba(249,115,22,0.25)] ring-1 ring-orange-500/60 scale-[1.01]'
+                      : 'bg-[#0f131c] border-[#1d2332] hover:border-orange-500/40'
                   }`}
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-2.5">
                     <div className="mt-0.5 flex-shrink-0">
                       <PumpkinSVG className="w-6 h-6" glow={isSelected} />
                     </div>
@@ -231,7 +229,7 @@ export default function PublicView({
               );
             })}
           </div>
-        </div>
+        </section>
 
       </main>
 
