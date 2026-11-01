@@ -81,7 +81,7 @@ export default function App() {
   };
 
   return (
-    <div className="w-full h-screen h-[100dvh] bg-[#07080b] text-white">
+    <div className="w-full h-dvh bg-[#07080b] text-white">
       {currentView === 'generator' ? (
         <GeneratorView
           points={points}

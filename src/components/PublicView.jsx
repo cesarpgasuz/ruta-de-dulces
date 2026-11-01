@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { MapPin, Clock, Search, SlidersHorizontal, Sparkles, Navigation } from 'lucide-react';
+import React, { useState, useRef, useCallback } from 'react';
+import { MapPin, Clock, Search } from 'lucide-react';
 import HalloweenMap from './HalloweenMap';
 import { PumpkinSVG } from './PumpkinIcon';
 
 export default function PublicView({
   points = [],
-  onNavigateToGenerator = () => {},
+  onNavigateToGenerator = () => { },
 }) {
   const [selectedPointId, setSelectedPointId] = useState(points[0]?.id || null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -39,11 +39,11 @@ export default function PublicView({
   }, []);
 
   return (
-    <div className="w-full h-screen h-[100dvh] flex flex-col md:flex-row bg-[#07080b] text-gray-100 overflow-hidden select-none">
-      
+    <div className="w-full h-dvh flex flex-col md:flex-row bg-[#07080b] text-gray-100 overflow-hidden select-none">
+
       {/* DESKTOP SIDEBAR (Left on desktop, hidden in mobile view in favor of bottom sliding carousel) */}
       <aside className="hidden md:flex flex-col w-[400px] lg:w-[440px] h-full bg-[#0a0d14] border-r border-[#191f2d] z-20 shadow-2xl relative">
-        
+
         {/* Sidebar Header */}
         <div className="p-5 pb-4 border-b border-[#181e2b] bg-gradient-to-b from-[#0e121b] to-[#0a0d14]">
           <div className="flex items-center justify-between mb-1">
@@ -85,7 +85,7 @@ export default function PublicView({
         </div>
 
         {/* Spots List */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {filteredPoints.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <span className="text-3xl block mb-2">👻</span>
@@ -99,11 +99,10 @@ export default function PublicView({
                 <div
                   key={point.id}
                   onClick={() => handleSelectPoint(point)}
-                  className={`p-4 rounded-2xl cursor-pointer transition-all duration-200 border ${
-                    isSelected
-                      ? 'bg-[#151a26] border-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.22)] ring-1 ring-orange-500/50'
+                  className={`group p-4 rounded-2xl cursor-pointer transition-all duration-200 border ${isSelected
+                      ? 'bg-[#151a26] border-orange-500 shadow-lg shadow-orange-500/20 ring-1 ring-orange-500/50'
                       : 'bg-[#0f131c] border-[#1d2332] hover:bg-[#141824] hover:border-orange-500/40'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-start gap-3.5">
                     <div className="mt-0.5 flex-shrink-0">
@@ -149,10 +148,10 @@ export default function PublicView({
       </aside>
 
       {/* RIGHT SIDE (FULL MAP ON DESKTOP, 3/4 MAP + 1/4 SOLID CARDS SECTION ON MOBILE) */}
-      <main className="flex-1 relative h-full flex flex-col overflow-hidden">
-        
-        {/* Interactive Dark Map: Full height on desktop, 3/4 (~73%) on mobile */}
-        <div className="w-full h-[73%] md:h-full relative overflow-hidden">
+      <main className="flex-1 h-full flex flex-col overflow-hidden relative">
+
+        {/* Interactive Dark Map: Full height on desktop, exactly 3/4 (75%) on mobile */}
+        <div className="w-full h-3/4 md:h-full min-h-0 relative overflow-hidden">
           <HalloweenMap
             points={points}
             selectedPoint={selectedPoint}
@@ -161,17 +160,17 @@ export default function PublicView({
         </div>
 
         {/* MOBILE BOTTOM SOLID SECTION (1/4 of screen height, solid background like desktop) */}
-        <section className="md:hidden w-full h-[27%] bg-[#0a0d14] border-t border-[#181e2b] flex flex-col justify-between px-3.5 pt-2 pb-[calc(0.6rem+env(safe-area-inset-bottom,0px))] z-30 shadow-[0_-8px_30px_rgba(0,0,0,0.85)]">
-          
+        <section className="md:hidden w-full h-1/4 min-h-0 bg-[#0a0d14] border-t border-[#181e2b] flex flex-col justify-between px-3 pt-2 pb-2.5 z-30 shadow-2xl">
+
           {/* Header inside mobile bottom section (matching Lovable style) */}
-          <div className="flex items-center justify-between px-1 mb-1.5 flex-shrink-0">
+          <div className="flex items-center justify-between px-1 shrink-0">
             <div className="flex items-center gap-2">
-              <span className="text-lg">🎃</span>
-              <h2 className="text-xl font-extrabold font-halloween text-orange-500 tracking-wide halloween-glow-orange leading-none">
+              <span className="text-base">🎃</span>
+              <h2 className="text-lg font-extrabold font-halloween text-orange-500 tracking-wide halloween-glow-orange leading-none">
                 RUTA DE DULCES
               </h2>
             </div>
-            <span className="text-[11px] text-orange-400 font-semibold bg-orange-500/10 border border-orange-500/20 px-2.5 py-0.5 rounded-full">
+            <span className="text-[11px] text-orange-400 font-semibold bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-full">
               {points.length} puntos
             </span>
           </div>
@@ -179,7 +178,7 @@ export default function PublicView({
           {/* Fully visible horizontal cards carousel */}
           <div
             ref={mobileScrollRef}
-            className="flex-1 flex items-center gap-2.5 overflow-x-auto pb-1 px-1 snap-x snap-mandatory no-scrollbar scroll-smooth"
+            className="w-full flex items-center gap-3 overflow-x-auto overflow-y-hidden py-1 px-1 snap-x snap-mandatory no-scrollbar"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {points.map((point) => {
@@ -189,15 +188,14 @@ export default function PublicView({
                   key={point.id}
                   ref={(el) => cardRefs.current.set(point.id, el)}
                   onClick={() => handleSelectPoint(point)}
-                  className={`flex-shrink-0 w-[275px] p-3 rounded-2xl cursor-pointer transition-transform duration-200 snap-center border ${
-                    isSelected
-                      ? 'bg-[#151a26] border-orange-500 shadow-[0_4px_16px_rgba(249,115,22,0.25)] ring-1 ring-orange-500/60 scale-[1.01]'
+                  className={`flex-shrink-0 w-[265px] p-2.5 rounded-xl cursor-pointer transition-transform duration-200 snap-center border ${isSelected
+                      ? 'bg-[#151a26] border-orange-500 shadow-md shadow-orange-500/20 ring-1 ring-orange-500/60 scale-[1.01]'
                       : 'bg-[#0f131c] border-[#1d2332] hover:border-orange-500/40'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-start gap-2.5">
                     <div className="mt-0.5 flex-shrink-0">
-                      <PumpkinSVG className="w-6 h-6" glow={isSelected} />
+                      <PumpkinSVG className="w-5 h-5" glow={isSelected} />
                     </div>
 
                     <div className="flex-1 min-w-0">
@@ -212,12 +210,12 @@ export default function PublicView({
                         )}
                       </div>
 
-                      <div className="flex items-center gap-1.5 text-xs text-gray-400 mt-1">
+                      <div className="flex items-center gap-1.5 text-xs text-gray-400 mt-0.5">
                         <MapPin className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />
                         <span className="truncate">{point.direccion || 'Doctor Mora'}</span>
                       </div>
 
-                      <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium mt-1">
+                      <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium mt-0.5">
                         <Clock className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
                         <span className="truncate">
                           {point.horaInicio || '7:00 pm'} – {point.horaFin || '9:00 pm'}

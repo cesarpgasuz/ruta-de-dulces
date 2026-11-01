@@ -178,7 +178,7 @@ export default function HalloweenMap({
   }, [selectedPoint]);
 
   return (
-    <div className="relative w-full h-full min-h-[300px] overflow-hidden bg-[#07080b]">
+    <div className="relative w-full h-full min-h-0 overflow-hidden bg-[#07080b]">
       <div ref={mapContainerRef} className="w-full h-full" />
       
       {/* Floating Center Doctor Mora Button */}

@@ -36,6 +36,16 @@
   background: #f97316;
 }
 
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Leaflet Custom Dark Styling */
 .leaflet-container {
   background-color: #07080b !important;
