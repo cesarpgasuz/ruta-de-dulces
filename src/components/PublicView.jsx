@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { MapPin, Clock, Search, SlidersHorizontal, Sparkles, Navigation } from 'lucide-react';
 import HalloweenMap from './HalloweenMap';
 import { PumpkinSVG } from './PumpkinIcon';
@@ -23,8 +23,8 @@ export default function PublicView({
 
   const selectedPoint = points.find((p) => p.id === selectedPointId) || null;
 
-  // Handle selecting a point
-  const handleSelectPoint = (point) => {
+  // Handle selecting a point (memoized to avoid map re-renders)
+  const handleSelectPoint = useCallback((point) => {
     setSelectedPointId(point.id);
 
     // Scroll card into view in horizontal mobile carousel
@@ -36,7 +36,7 @@ export default function PublicView({
         block: 'nearest',
       });
     }
-  };
+  }, []);
 
   return (
     <div className="w-full h-screen flex flex-col md:flex-row bg-[#07080b] text-gray-100 overflow-hidden select-none">
@@ -148,8 +148,8 @@ export default function PublicView({
         </div>
       </aside>
 
-      {/* MOBILE TOP BAR (Fixed on top on mobile) */}
-      <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#0a0d14]/95 backdrop-blur-md border-b border-[#181e2b] z-30">
+      {/* MOBILE TOP BAR (Fixed on top on mobile, zero blur GPU cost) */}
+      <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#0a0d14] border-b border-[#181e2b] z-30">
         <div className="flex items-center gap-2">
           <span className="text-xl">🎃</span>
           <div>
@@ -191,10 +191,10 @@ export default function PublicView({
                   key={point.id}
                   ref={(el) => cardRefs.current.set(point.id, el)}
                   onClick={() => handleSelectPoint(point)}
-                  className={`flex-shrink-0 w-[290px] p-3.5 rounded-2xl cursor-pointer transition-all duration-200 snap-center border backdrop-blur-xl ${
+                  className={`flex-shrink-0 w-[290px] p-3.5 rounded-2xl cursor-pointer transition-transform duration-200 snap-center border ${
                     isSelected
-                      ? 'bg-[#121622]/95 border-orange-500 shadow-[0_8px_25px_rgba(249,115,22,0.3)] ring-1 ring-orange-500/60 scale-[1.02]'
-                      : 'bg-[#0c0f17]/90 border-[#1e2535] hover:border-orange-500/40 shadow-xl'
+                      ? 'bg-[#121622] border-orange-500 shadow-[0_6px_20px_rgba(249,115,22,0.25)] ring-1 ring-orange-500/60 scale-[1.02]'
+                      : 'bg-[#0d1017] border-[#1e2535] hover:border-orange-500/40 shadow-lg'
                   }`}
                 >
                   <div className="flex items-start gap-3">

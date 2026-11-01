@@ -7,7 +7,7 @@ export function PumpkinSVG({ className = "w-7 h-7", glow = false }) {
   return (
     <svg
       viewBox="0 0 100 100"
-      className={`${className} ${glow ? 'drop-shadow-[0_0_12px_rgba(249,115,22,0.85)]' : ''}`}
+      className={`${className} ${glow ? 'scale-110' : ''} transition-transform duration-200`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -84,14 +84,14 @@ export function PumpkinSVG({ className = "w-7 h-7", glow = false }) {
 }
 
 /**
- * Returns raw HTML string for Leaflet DivIcon
+ * Returns raw HTML string for Leaflet DivIcon (GPU-Accelerated, zero expensive drop-shadow filters)
  */
 export function getPumpkinMarkerHtml(isActive = false) {
   const activeClass = isActive ? 'is-active' : '';
-  const scale = isActive ? '1.25' : '1';
   return `
-    <div class="pumpkin-marker ${activeClass}" style="transform: scale(${scale}); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
-      <svg viewBox="0 0 100 100" style="width: 100%; height: 100%; filter: drop-shadow(0 0 10px rgba(249,115,22,0.95)) drop-shadow(0 0 20px rgba(234,88,12,0.5));" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="pumpkin-marker ${activeClass}">
+      <div class="pumpkin-aura"></div>
+      <svg viewBox="0 0 100 100" class="pumpkin-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M50 20 C48 10 56 4 63 3 C61 9 57 14 53 20 Z" fill="#22c55e" stroke="#15803d" stroke-width="1.5" stroke-linejoin="round"/>
         <ellipse cx="32" cy="56" rx="20" ry="26" fill="#ea580c"/>
         <ellipse cx="68" cy="56" rx="20" ry="26" fill="#ea580c"/>

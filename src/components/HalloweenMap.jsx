@@ -107,7 +107,13 @@ export default function HalloweenMap({
     }
   }, [isGenerator, pendingCoords]);
 
-  // Render Halloween Points / Pumpkin Markers
+  // Keep latest onSelectPoint in a ref to avoid recreating markers on callback changes
+  const onSelectPointRef = useRef(onSelectPoint);
+  useEffect(() => {
+    onSelectPointRef.current = onSelectPoint;
+  }, [onSelectPoint]);
+
+  // Render Halloween Points / Pumpkin Markers (Only re-runs when points list changes!)
   useEffect(() => {
     const map = mapInstanceRef.current;
     const layer = markersLayerRef.current;
@@ -124,69 +130,51 @@ export default function HalloweenMap({
       const pumpkinIcon = L.divIcon({
         className: 'custom-pumpkin-icon',
         html: getPumpkinMarkerHtml(isSelected),
-        iconSize: [44, 44],
-        iconAnchor: [22, 22],
-        popupAnchor: [0, -22],
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
       });
 
       const marker = L.marker([point.lat, point.lng], {
         icon: pumpkinIcon,
-      });
-
-      // Spooky Dark Popup Content
-      const popupHtml = `
-        <div style="min-width: 190px; padding: 2px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-            <span style="font-size: 18px;">🎃</span>
-            <h4 style="font-weight: 700; font-size: 15px; color: #f97316; margin: 0; font-family: 'Plus Jakarta Sans', sans-serif;">
-              ${escapeHtml(point.nombre)}
-            </h4>
-          </div>
-          <div style="font-size: 12px; color: #9ca3af; margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
-            <span>📍</span>
-            <span>${escapeHtml(point.direccion || 'Doctor Mora')}</span>
-          </div>
-          <div style="font-size: 12px; color: #34d399; font-weight: 600; display: flex; align-items: center; gap: 4px;">
-            <span>🕒</span>
-            <span>${escapeHtml(point.horaInicio || '7:00 pm')} – ${escapeHtml(point.horaFin || '9:00 pm')}</span>
-          </div>
-        </div>
-      `;
-
-      marker.bindPopup(popupHtml, {
-        closeButton: true,
-        autoClose: true,
+        zIndexOffset: isSelected ? 1000 : 0,
       });
 
       marker.on('click', () => {
-        onSelectPoint(point);
+        onSelectPointRef.current?.(point);
       });
 
       marker.addTo(layer);
       markersMapRef.current.set(point.id, marker);
+    });
+  }, [points]);
 
-      if (isSelected) {
-        marker.openPopup();
+  // Fast active state toggle on markers (0 DOM destruction, instant 60 FPS update)
+  useEffect(() => {
+    markersMapRef.current.forEach((marker, id) => {
+      const el = marker.getElement();
+      if (!el) return;
+      const markerDiv = el.querySelector('.pumpkin-marker');
+      if (!markerDiv) return;
+
+      if (selectedPoint && selectedPoint.id === id) {
+        markerDiv.classList.add('is-active');
+        marker.setZIndexOffset(1000);
+      } else {
+        markerDiv.classList.remove('is-active');
+        marker.setZIndexOffset(0);
       }
     });
-  }, [points, selectedPoint, onSelectPoint]);
+  }, [selectedPoint]);
 
-  // Center/Fly to Selected Point
+  // Center/Fly to Selected Point (No popups)
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !selectedPoint || !selectedPoint.lat) return;
 
     map.flyTo([selectedPoint.lat, selectedPoint.lng], 17, {
-      duration: 0.8,
+      duration: 0.6,
       easeLinearity: 0.25,
     });
-
-    const marker = markersMapRef.current.get(selectedPoint.id);
-    if (marker) {
-      setTimeout(() => {
-        marker.openPopup();
-      }, 500);
-    }
   }, [selectedPoint]);
 
   return (
@@ -216,14 +204,4 @@ export default function HalloweenMap({
       )}
     </div>
   );
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
 }
